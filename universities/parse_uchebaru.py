@@ -95,7 +95,7 @@ def normalize_number(string):
 def process_exam_section(divs):
     ege_exams_as_string = divs[1].text
     custom_exams_as_string = divs[3].text if len(divs) > 2 else ''
-    ege_exams = ege_exams_as_string.replace(' (профильный)', '').split(', ')
+    ege_exams = ege_exams_as_string.replace(' (профильный)', '').replace('Английский язык', 'Иностранный язык').split(', ')
     custom_exams = custom_exams_as_string
     return {'ege': ege_exams,
             'custom': custom_exams or None}
@@ -140,7 +140,8 @@ def union_programs_from_ucheba_and_graduate(ucheba_program, graduate_programs):
 
 def main():
     universities = []
-    collations = file_to_dict('moscow.json')
+    city = 'spb'
+    collations = file_to_dict(city+'.json')
     for collation in collations:
         if collation['ucheba_url'] is None:
             continue
@@ -162,7 +163,7 @@ def main():
         graduate_university_info['programs'] = unioned_programs
         pprint(graduate_university_info)
         universities.append(graduate_university_info)
-    dict_to_file(universities, 'parsed_moscow.json')
+    dict_to_file(universities, 'final_{}.json'.format(city))
 
 if __name__ == '__main__':
     main()
