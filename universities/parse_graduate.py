@@ -44,7 +44,6 @@ def fetch_universities_list():
 
 @try_reconnect
 def fetch_university_info(code, year):
-    print(code)
     url = 'http://vo.graduate.edu.ru/graphs/getGraph'
     payload = UNIVERSITY_INFO_PAYLOAD_TEMPLATE.format(code=code, year=year)
     headers = HEADERS
@@ -68,7 +67,29 @@ def fetch_university_programs(code):
     return requests.post(url, headers=headers, data=json.dumps(payload)).json()
 
 
+def parse_all_university_data(code):
+    university_data = fetch_university_info(code, 2015)['data']['data']
+    if university_data['avg_wage'] is None:
+        university_data = fetch_university_info(code, 2014)['data']['data']
+        if university_data['avg_wage'] is None:
+            return None
+    programs_data = fetch_university_programs(code)['data']['data']
+    all_programs = programs_data[0]
+    all_programs.extend(programs_data[1])
+    university_data['programs'] = []
+    for program in all_programs:
+        university_data['programs'].append({
+            'name': program['d'],
+            'code': program['s'],
+            'salary': float(program['i'][2]) * 1000,
+            'employment': float(program['i'][3])
+        })
+    return university_data
+
+
 if __name__ == '__main__':
+    pprint(parse_all_university_data('4E406378382055196097EA90C35CD701'))
+    exit()
     pprint(fetch_university_info('028C6D7292E60AAD7453B0799CB59FD8', 2015))
     universities = fetch_universities_list()
     pprint(len(universities['data']))

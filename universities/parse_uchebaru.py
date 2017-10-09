@@ -3,7 +3,7 @@ import json
 from pprint import pprint
 import requests
 from bs4 import BeautifulSoup
-from parse_graduate import fetch_universities_list, fetch_university_info, fetch_university_programs, try_reconnect
+from parse_graduate import fetch_universities_list, parse_all_university_data, try_reconnect
 
 SEARCH_URL = 'https://www.ucheba.ru/for-abiturients/vuz?eq[0]=__s:{query}'
 
@@ -75,7 +75,7 @@ def collect_programs(soup):
     return programs
 
 
-def fetch_program_list(domain, university_id):
+def fetch_program_list_from_ucheba(domain, university_id):
     url = '{domain}for-abiturients/vuz/programs/{id}?eq%5B0%5D=__u%3A{id}'.format(
         domain=domain,
         id=university_id)
@@ -126,36 +126,43 @@ def collect_program_info(soup):
     return info_table
 
 
-def parse_program_info(program):
-    soup = fetch_soup(program['url'])
-    print(program['url'])
+def union_programs_from_ucheba_and_graduate(ucheba_program, graduate_programs):
+    soup = fetch_soup(ucheba_program['url'])
     program_info = collect_program_info(soup)
-    collected_programs.append(program_info)
-    program_salary = [salary for salary in salary_data if salary['d'] == program_info['common_name']] \
-                     or [salary for salary in salary_data if salary['d'] == program_info['full_name']]
+    program_info['ucheba_url'] = ucheba_program['url']
+    program_salary = [salary for salary in graduate_programs if salary['name'] == program_info['common_name']] \
+                     or [salary for salary in graduate_programs if salary['name'] == program_info['full_name']]
+    if not program_salary:
+        return program_info
 
-    program_salary = program_salary[0]
-    program_info['сode'] = program_salary['s']
-    program_info['salary'] = float(program_salary['i'][2]) * 1000
-    program_info['employment'] = float(program_salary['i'][3])
-    return program_info
+    return {**program_info, **program_salary[0]}
 
 
-if __name__ == '__main__':
-    programs_urls = []
+def main():
+    universities = []
     collations = file_to_dict('moscow.json')
     for collation in collations:
         if collation['ucheba_url'] is None:
             continue
 
-        graduate_info = fetch_university_programs(collation['graduate_id'])['data']['data']
-        salary_data = graduate_info[0]
-        salary_data.extend(graduate_info[1])
+        graduate_university_info = parse_all_university_data(collation['graduate_id'])
+        if graduate_university_info is None:
+            continue
+
         print('Start new University')
-
+        graduate_university_info['ucheba_url'] = collation['ucheba_url']
         domain, id = extract_id_from_url(collation['ucheba_url'])
-        programs = fetch_program_list(domain, id)
-        collected_programs = []
+        ucheba_programs = fetch_program_list_from_ucheba(domain, id)
+        unioned_programs = []
 
-        for program in programs:
-            collected_programs.append(parse_program_info(program))
+        for program in ucheba_programs:
+            unioned_programs.append(
+                union_programs_from_ucheba_and_graduate(program, graduate_university_info['programs'])
+            )
+        graduate_university_info['programs'] = unioned_programs
+        pprint(graduate_university_info)
+        universities.append(graduate_university_info)
+    dict_to_file(universities, 'parsed_moscow.json')
+
+if __name__ == '__main__':
+    main()
