@@ -51,7 +51,7 @@ class Program(models.Model):
     code = models.CharField(max_length=255, blank=True, null=True)
     common_name = models.CharField(max_length=255)
     cost_per_year = models.PositiveIntegerField(null=True, blank=True)
-    custom_exam = models.CharField(max_length=255, blank=True, null=True)
+    custom_exam = models.CharField(max_length=511, blank=True, null=True)
     duration = models.PositiveIntegerField()
     employment_percentage = models.FloatField(blank=True, null=True)
     first_passing_score = models.PositiveIntegerField(blank=True, null=True)
@@ -63,6 +63,18 @@ class Program(models.Model):
     ucheba_url = models.CharField(max_length=255)
     year = models.PositiveIntegerField()
 
+    @property
+    def exams_as_list(self):
+        required_exams_for_program = RequiredExam.objects.filter(program=self).all()
+        return [ex.exam for ex in required_exams_for_program]
+
+    @property
+    def exams_as_string(self):
+        exams_slugs = self.exams_as_list
+        # Tuple EXAMS to Dict
+
+        #return ', '.join([ex.exam for ex in required_exams_for_program])
+
 
 class RequiredExam(models.Model):
     EXAM_SOCIAL_STUDIES = 'soc'
@@ -70,7 +82,7 @@ class RequiredExam(models.Model):
     EXAM_LITERATURE = 'lit'
     EXAM_PHYSICS = 'phy'
     EXAM_HISTORY = 'his'
-    EXAM_FOREIGN = 'for'
+    EXAM_FOREIGN = 'lan'
     EXAM_ICT = 'ict'
     EXAM_RUSSIAN = 'rus'
     EXAM_MATH = 'mat'
@@ -82,7 +94,6 @@ class RequiredExam(models.Model):
              (EXAM_LITERATURE, 'Литература'),
              (EXAM_PHYSICS, 'Физика'),
              (EXAM_HISTORY, 'История'),
-             # ('eng', 'Английский язык'), !!! TODO ADD English as Foreign language
              (EXAM_FOREIGN, 'Иностранный язык'),
              (EXAM_ICT, 'Информатика и ИКТ'),
              (EXAM_RUSSIAN, 'Русский язык'),

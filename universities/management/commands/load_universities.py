@@ -14,6 +14,13 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('filepath', type=str)
+        parser.add_argument(
+            '--delete',
+            action='store_true',
+            dest='delete',
+            default=False,
+            help='Delete poll instead of closing it',
+        )
 
     def handle(self, *args, **options):
         universities = read_dumped_json_from_file(options['filepath'])
@@ -26,16 +33,22 @@ class Command(BaseCommand):
 
             if university_in_db.exists():
                 university_in_db = university_in_db.first()
+                if options['delete']:
+                    university_in_db.delete()
+                    university_in_db = self.create_university_object_from_dict(university)
             else:
                 university_in_db = self.create_university_object_from_dict(university)
 
             for program in university['programs']:
+
                 program_in_db = Program.objects.filter(
                     university=university_in_db,
                     full_name=program['full_name'],
                     year=settings.LAST_EGE_YEAR
                 )
-                if not program_in_db.exists() and hasattr(program, 'exams'):
+                if options['delete']:
+                    program_in_db.delete()
+                if not program_in_db.exists() and 'exams' in program:
                     program_in_db = self.create_program_object_from_dict(program, university_in_db)
                     for exam in program['exams']['ege']:
                         RequiredExam.objects.create(
@@ -72,16 +85,16 @@ class Command(BaseCommand):
             university=university,
             code=data.get('code', ''),
             common_name=data['common_name'],
-            cost_per_year=data['cost'],
+            cost_per_year=data.get('cost', None),
             duration=data['duration'],
-            employment_percentage=data.get('employment', 0),
+            employment_percentage=data.get('employment', None),
             custom_exam=data['exams']['custom'],
             form=form,
             full_name=data['full_name'],
             level=level,
-            places=data.get('places', 0),
-            average_salary=data.get('salary', 0),
-            second_passing_score=data.get('score', 0),
+            places=data.get('places', None),
+            average_salary=data.get('salary', None),
+            second_passing_score=data.get('score', None),
             ucheba_url=data['ucheba_url'],
             year=settings.LAST_EGE_YEAR
         )
