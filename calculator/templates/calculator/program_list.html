@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List</title>
+</head>
+<body>
+    {% for program in programs %}
+        {{program.university.name}}-{{ program.full_name }}-{{ program.second_passing_score }}-{{ program.average_salary }} <br>
+    {% endfor %}
+</body>
+</html>
