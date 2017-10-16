@@ -52,7 +52,7 @@ class Program(models.Model):
     common_name = models.CharField(max_length=255)
     cost_per_year = models.PositiveIntegerField(null=True, blank=True)
     custom_exam = models.CharField(max_length=511, blank=True, null=True)
-    duration = models.PositiveIntegerField()
+    duration = models.PositiveIntegerField(null=True, blank=True)
     employment_percentage = models.FloatField(blank=True, null=True)
     first_passing_score = models.PositiveIntegerField(blank=True, null=True)
     full_name = models.CharField(max_length=255)
@@ -65,15 +65,22 @@ class Program(models.Model):
 
     @property
     def exams_as_list(self):
-        required_exams_for_program = RequiredExam.objects.filter(program=self).all()
+        required_exams_for_program = self.exams.all()
         return [ex.exam for ex in required_exams_for_program]
 
     @property
     def exams_as_string(self):
-        exams_slugs = self.exams_as_list
-        # Tuple EXAMS to Dict
+        named_slugs = dict(RequiredExam.EXAMS)
+        return ', '.join([named_slugs[slug] for slug in self.exams_as_list])
 
-        #return ', '.join([ex.exam for ex in required_exams_for_program])
+    def is_suitable(self, exam_form_data):
+        required_exams = self.exams_as_list
+        selected_exams = [exam for exam, score in exam_form_data.items() if score]
+        selected_score = sum([score for exam, score in exam_form_data.items() if score and exam in required_exams])
+        if all(exam in selected_exams for exam in required_exams) and self.second_passing_score:
+            if selected_score >= self.second_passing_score:
+                return True
+        return False
 
 
 class RequiredExam(models.Model):
