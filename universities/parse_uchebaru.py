@@ -3,9 +3,25 @@ import json
 from pprint import pprint
 import requests
 from bs4 import BeautifulSoup
-from parse_graduate import fetch_universities_list, parse_all_university_data, try_reconnect
+from universities.parse_graduate import parse_all_university_data, try_reconnect
 
 SEARCH_URL = 'https://www.ucheba.ru/for-abiturients/vuz?eq[0]=__s:{query}'
+
+
+def parse_specialties(codes_amount, level='03'):
+    specialties_groups = {}
+    for specialty_code in range(1, codes_amount+1):
+        soup = fetch_soup('https://postupi.online/specialnosti/{}.{}.00/'.format(specialty_code, level))
+        name = soup.find('div', {'class':'logo_header_inner'})\
+            .find('span').text\
+            .replace(' - специальности вузов: направления подготовки бакалавриата', '')
+        programs = [header.find('a').text for header in soup.find_all('h2', {'class': 'h2_prog'})]
+
+        specialties_groups[specialty_code] = {}
+        specialties_groups[specialty_code]['name'] = name
+        specialties_groups[specialty_code]['programs'] = programs
+    pprint(specialties_groups)
+    return specialties_groups
 
 
 @try_reconnect
@@ -95,9 +111,9 @@ def normalize_number(string):
 def process_exam_section(divs):
     ege_exams_as_string = divs[1].text
     custom_exams_as_string = divs[3].text if len(divs) > 2 else ''
-    ege_exams = ege_exams_as_string.replace(' (профильный)', '').replace('Английский язык', 'Иностранный язык').split(', ')
+    ege_exams = re.sub(r' +\(\w+\)', '', ege_exams_as_string).replace('Английский язык', 'Иностранный язык')
     custom_exams = custom_exams_as_string
-    return {'ege': ege_exams,
+    return {'ege': ege_exams.split(', '),
             'custom': custom_exams or None}
 
 
@@ -126,22 +142,46 @@ def collect_program_info(soup):
     return info_table
 
 
-def union_programs_from_ucheba_and_graduate(ucheba_program, graduate_programs):
+def union_programs_from_ucheba_and_graduate(ucheba_program, graduate_programs, specialties):
     soup = fetch_soup(ucheba_program['url'])
     program_info = collect_program_info(soup)
     program_info['ucheba_url'] = ucheba_program['url']
     program_salary = [salary for salary in graduate_programs if salary['name'] == program_info['common_name']] \
                      or [salary for salary in graduate_programs if salary['name'] == program_info['full_name']]
     if not program_salary:
-        return program_info
-
+        try:
+            program_info = {**program_info, **find_specialty_group(program_info['common_name'], specialties)}
+        except TypeError:
+            return program_info
+        group = find_specialty_group(program_info['common_name'], specialties)
+        program_salary = [salary for salary in graduate_programs if salary['name'] == group['group_name']]
+        if not program_salary:
+            return program_info
     return {**program_info, **program_salary[0]}
+
+
+def find_specialty_group(specialty_name, all_specialties):
+    print(specialty_name)
+    for code, data in all_specialties.items():
+        if specialty_name not in data['programs']:
+            continue
+        return {'code_prefix': code,
+                'group_name': [name for name in data['programs'] if name == specialty_name][0]}
+
+
+def add_specialty(name, filepath='specialties.json'):
+    code = input('Code:')
+    all_specialties = file_to_dict(filepath)
+    pprint(all_specialties)
+    all_specialties[code]['programs'].append(name)
+    dict_to_file(all_specialties, filepath)
 
 
 def main():
     universities = []
     city = 'spb'
-    collations = file_to_dict(city+'.json')
+    collations = file_to_dict(city + '.json')
+    specialties = file_to_dict('all_specialties.json')
     for collation in collations:
         if collation['ucheba_url'] is None:
             continue
@@ -158,12 +198,12 @@ def main():
 
         for program in ucheba_programs:
             unioned_programs.append(
-                union_programs_from_ucheba_and_graduate(program, graduate_university_info['programs'])
+                union_programs_from_ucheba_and_graduate(program, graduate_university_info['programs'], specialties)
             )
         graduate_university_info['programs'] = unioned_programs
         pprint(graduate_university_info)
         universities.append(graduate_university_info)
-    dict_to_file(universities, 'final_{}.json'.format(city))
+    dict_to_file(universities, 'test_{}.json'.format(city))
 
 if __name__ == '__main__':
     main()

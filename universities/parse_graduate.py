@@ -1,5 +1,6 @@
 import requests
 import json
+import re
 from time import sleep
 from pprint import pprint
 
@@ -78,6 +79,8 @@ def parse_all_university_data(code):
     all_programs.extend(programs_data[1])
     university_data['programs'] = []
     for program in all_programs:
+        if re.search(r'\.04\.', program['s']):
+            continue
         university_data['programs'].append({
             'name': program['d'],
             'code': program['s'],
@@ -88,7 +91,7 @@ def parse_all_university_data(code):
 
 
 if __name__ == '__main__':
-    pprint(parse_all_university_data('4E406378382055196097EA90C35CD701'))
+    pprint(parse_all_university_data('07B9F5809B5031B9A484F4F1525D56B4'))
     exit()
     pprint(fetch_university_info('028C6D7292E60AAD7453B0799CB59FD8', 2015))
     universities = fetch_universities_list()
