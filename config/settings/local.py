@@ -9,7 +9,7 @@ SECRET_KEY = '8p8van&gi*o!q+&7w*adc@+j^gy#wyeu&u1klk%d+yuq&#4)4b'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+INTERNAL_IPS = ['127.0.0.1']
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
