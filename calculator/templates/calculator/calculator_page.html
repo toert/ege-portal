@@ -1,14 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Calculator</title>
-</head>
-<body>
-    <form method="post">
-        {% csrf_token %}
-        {{ score_form.as_p }}
-        <button type="submit">Submit!</button>
-    </form>
-</body>
-</html>
+{% extends 'calculator/base.html' %}
+{% block title %}Калькулятор баллов{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Выберите предметы</h1><br>
+
+
+                    <form method="post" class="">
+                        {% csrf_token %}
+                        {% for field in score_form %}
+                        <div class="form-group row">
+                            <label class="col-3 col-form-label">{{ field.label_tag }}</label>
+                            <div class="col-3">
+                                {{ field }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <!--{{ score_form.as_p }} -->
+                        <button type="submit" class="btn btn-info">Найти!</button>
+                    </form>
+
+        </div>
+    </div>
+    <!-- Example row of columns -->
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Heading</h2>
+            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
+                euismod. Donec sed odio dui. </p>
+            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Heading</h2>
+            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
+                euismod. Donec sed odio dui. </p>
+            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Heading</h2>
+            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
+                porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
+                fermentum massa justo sit amet risus.</p>
+            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

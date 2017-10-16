@@ -9,4 +9,5 @@ urlpatterns = [
     # url(r'^(?P<category_slug>[-\w]+)/(?P<id>\d+)-(?P<product_slug>[-\w]+)/$',
     #     views.render_product_page, name='render_product')
     url(r'^$', views.main_page, name='main_page'),
+    url(r'^programs/(?P<pk>\d+)/$', views.ProgramDetailView.as_view(), name='program_details'),
 ]

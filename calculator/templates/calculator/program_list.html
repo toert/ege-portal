@@ -1,12 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>List</title>
-</head>
-<body>
-    {% for program in programs %}
-        {{program.university.name}}-{{ program.full_name }}-{{ program.second_passing_score }}-{{ program.average_salary }} <br>
-    {% endfor %}
-</body>
-</html>
+{% extends 'calculator/base.html' %}
+{% block title %}Результаты поиска{% endblock %}
+{% block content %}
+<br><br><br>
+    <div class="container">
+        <p>Со своими баллами вы могли бы пройти на следующие направления:</p>
+    </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Проходной балл</th>
+                    <th>Название ВУЗа</th>
+                    <th>Программа</th>
+                    <th>Обычное имя</th>
+                    <th>Зарплата</th>
+                    <th>Предметы</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for program in programs %}
+                <tr>
+                    <td>{{ program.second_passing_score }}</td>
+                    <td>{{ program.university.name}}</td>
+                    <td>{{ program.full_name }}</td>
+                    <td>{{ program.common_name }}</td>
+                    <td>{% if program.average_salary %}
+                            {{ program.average_salary|floatformat:"0" }}₽
+                        {% else %}
+                            Информация не представлена
+                        {% endif %}
+                    </td>
+                    <td>{{ program.exams_as_string }}</td>
+                    <td><a href="{% url 'calculator:program_details' program.id %}" class="btn btn-info">Подробнее»</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+      </table>
+{% endblock %}

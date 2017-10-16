@@ -1,0 +1,65 @@
+{% extends 'calculator/base.html' %}
+{% block content %}
+<br><br><br><hr>
+
+<table class="table table-bordered">
+
+    <tbody>
+    <tr>
+        <td>Код специальности</td>
+        <td>{{ program.code }}</td>
+    </tr>
+    <tr>
+        <td>Специальность</td>
+        <td>{{ program.full_name }} ({{ program.common_name }})</td>
+    </tr>
+    <tr>
+        <td>Название университета</td>
+        <td>{{ program.university.name}}</td>
+    </tr>
+    <tr>
+        <td>Проходной балл</td>
+        <td>{{ program.second_passing_score }}</td>
+    </tr>
+    <tr>
+        <td>Средняя зарплата</td>
+        <td>{% if program.average_salary %}
+            {{ program.average_salary|floatformat:"0" }}₽
+            {% else %}
+            Информация не представлена
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Процент трудоустройства</td>
+        <td>{% if program.employment_percentage %}
+            {{ program.employment_percentage }}% * 100
+            {% else %}
+            Информация не представлена
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Вступительные испытания</td>
+        <td>ЕГЭ: {{ program.exams_as_string }}
+            {% if program.custom_exam %}<br>Внутренние: {{ program.custom_exam}}{% endif %}
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+
+
+    <!--cost_per_year = models.PositiveIntegerField(null=True, blank=True)-->
+    <!--custom_exam = models.CharField(max_length=511, blank=True, null=True)-->
+    <!--duration = models.PositiveIntegerField(null=True, blank=True)-->
+    <!--first_passing_score = models.PositiveIntegerField(blank=True, null=True)-->
+    <!--full_name = models.CharField(max_length=255)-->
+    <!--form = models.CharField(max_length=64, choices=FORMS)-->
+    <!--level = models.CharField(max_length=255)-->
+    <!--second_passing_score = models.PositiveIntegerField(blank=True, null=True)-->
+    <!--places = models.PositiveIntegerField(null=True)-->
+    <!--ucheba_url = models.CharField(max_length=255)-->
+    <!--year = models.PositiveIntegerField()-->
+{% endblock %}
