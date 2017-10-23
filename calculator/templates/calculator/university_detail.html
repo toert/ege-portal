@@ -1,10 +1,34 @@
 {% extends 'calculator/base.html' %}
-{% block title %}Результаты поиска{% endblock %}
 {% block content %}
-<br><br><br>
+<br><br><br><hr>
+
+<table class="table table-bordered">
+
+    <tbody>
+    <tr>
+        <td>Название университета</td>
+        <td>{{ university.name }}</td>
+    </tr>
+
+    <tr>
+        <td>Местоположение</td>
+        <td>{{ university.region_name }}</td>
+    </tr>
+    <tr>
+        <td>Средняя зарплата</td>
+        <td>{{ university.average_salary|floatformat:"0" }}₽</td>
+    </tr>
+    <tr>
+        <td>Процент трудоустройства</td>
+        <td>
+            {{ university.employment_percentage }}%
+        </td>
+    </tr>
+
+
+    </tbody>
+</table>
     <div class="container">
-        <p>Со своими баллами вы могли бы пройти на следующие направления:</p>
-    </div>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -18,7 +42,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for program in programs %}
+            {% for program in university.programs.all %}
                 <tr>
                     <td>{{ program.second_passing_score }}</td>
                     <td>{{ program.university.name}}</td>
@@ -30,11 +54,23 @@
                             Информация не представлена
                         {% endif %}
                     </td>
-                    <td>{{ program.exams_as_string }}{% if program.custom_exam %}, {{program.custom_exam}} {% endif %}</td>
+                    <td>{{ program.exams_as_string }}</td>
                     <td><a href="{% url 'calculator:program_details' program.id %}" class="btn btn-info">Подробнее»</a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
       </table>
+    </div>
+
+    <!--average_salary = models.FloatField()-->
+    <!--employment_percentage = models.FloatField()-->
+    <!--graduate_id = models.CharField(max_length=255)-->
+    <!--has_military_department = models.BooleanField(default=False)-->
+    <!--has_dormitory = models.BooleanField(default=False)-->
+    <!--region_name = models.CharField(max_length=255)-->
+    <!--type = models.CharField(max_length=3, choices=TYPES)-->
+    <!--ucheba_url = models.CharField(max_length=255)-->
+    <!--year = models.PositiveIntegerField()-->
+
 {% endblock %}

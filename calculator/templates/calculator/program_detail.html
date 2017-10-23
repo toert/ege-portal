@@ -15,7 +15,7 @@
     </tr>
     <tr>
         <td>Название университета</td>
-        <td>{{ program.university.name}}</td>
+        <td><a href="{% url 'calculator:university_details' program.university.id %}">{{ program.university.name }}</a></td>
     </tr>
     <tr>
         <td>Проходной балл</td>
