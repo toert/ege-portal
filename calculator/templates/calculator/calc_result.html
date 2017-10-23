@@ -1,0 +1,55 @@
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Проходной балл</th>
+        <th>Название ВУЗа</th>
+        <th>Факультет</th>
+        <th>Программа</th>
+        <th>Обычное имя</th>
+        <th>Зарплата</th>
+        <th>Предметы</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for program in programs %}
+    <tr>
+        <td>{{ program.second_passing_score }}</td>
+        <td>{{ program.university.name }}</td>
+        <td>{{ program.faculty }}</td>
+        <td>{{ program.full_name }}</td>
+        <td>{{ program.common_name }}</td>
+        <td>{% if program.average_salary %}
+            {{ program.average_salary|floatformat:"0" }}₽
+            {% else %}
+            Информация не представлена
+            {% endif %}
+        </td>
+        <td>{{ program.exams_as_string }}{% if program.custom_exam %}, {{program.custom_exam}} {% endif %}</td>
+        <td><a href="{% url 'calculator:program_details' program.id %}" class="btn btn-info">Подробнее»</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="&page={{ page_obj.previous_page_number }}" class="pagination"">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="&page={{ i }}" class="pagination">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a href="&page={{ page_obj.next_page_number }}" class="pagination">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
