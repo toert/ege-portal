@@ -16,6 +16,7 @@ class ExamsForm(forms.Form):
     che = forms.IntegerField(100, 36, label="Химия", required=False)
     bio = forms.IntegerField(100, 36, label="Биология", required=False)
 
+    is_custom_exam_taken = forms.BooleanField(required=False, label="Готовы сдавать внутренние испытания ВУЗов?")
     sort_by = forms.ChoiceField(choices=[('salary', 'Зарплате'), ('score', 'Проходному баллу')], label='Сортировать по')
 
     # class Meta:
