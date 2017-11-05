@@ -16,7 +16,7 @@ def calculator_page(request):
 class ProgramsCalculator(ListView):
     model = Program
     context_object_name = 'programs'
-    paginate_by = 30
+    paginate_by = 15
     template_name = 'calculator/calc_result.html'
 
     def get_queryset(self):
