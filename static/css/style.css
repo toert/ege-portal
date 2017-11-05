@@ -1,0 +1,132 @@
+/* BASE STYLESHEET */
+body {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.navbar-nav > li {
+  float: left;
+  position: relative;
+}
+
+@media screen and (min-width: 980px) {
+    .navbar-nav .active a::after {
+        border-bottom: 5px solid #5bc0eb;
+        bottom: -10px;
+        content: " ";
+        left: 0;
+        position: absolute;
+        right: 0;
+    }
+}
+@media screen and (max-width: 979px) {
+    .navbar-nav .active  {
+
+    }
+}
+
+i.fa {
+    color: #5bc0eb;
+}
+i.fa-circle {
+    color: #FFFFFF;
+    text-shadow: 0px 0px 5px #5bc0eb;
+}
+.padded {
+    padding-right: 6%;
+    padding-left: 6%;
+}
+.bordered {
+    border: 3px solid #f7f7f7; /* Параметры рамки */
+    padding: 15px; /* Поля вокруг текста */
+    margin-bottom: 10px; /* Отступ снизу */
+    border-radius: 8px;
+   }
+input.score {
+    width: 56px;
+}
+.col-form-label {
+    height: fit-content;
+}
+.desc_h2 {
+    font-weight: 900;
+}
+.desc_h3 {
+    font-weight: 700;
+}
+/* /BASE STYLESHEET */
+
+
+/* CARDS STYLESHEET */
+.header {
+    font-weight: 700;
+}
+
+.card-title .badge {
+    font-size: 1.1em;
+}
+
+.card:not(:first-child) {
+    margin-top: -1px;
+}
+
+.card-title a {
+    color: black;
+}
+
+.description {
+    color: #888888;
+    font-size: 80%;
+}
+
+.card-digits {
+    font-size: 2vw;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 767px) {
+    .right-card-column {
+        padding-top: 15px;
+    }
+
+    .card-digits {
+        font-size: 1.3em;
+    }
+}
+
+.loader {
+    display: table;
+    margin: 0 auto;
+    border: 1vh solid rgba(255, 255, 255, 0.8); /* Light grey */
+    border-top: 1vh solid #5bc0eb; /* Blue */
+    border-radius: 50%;
+    width: 7vh;
+    height: 7vh;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.overlay {
+    position: absolute;
+    display: none;
+    width: 95%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 2;
+    cursor: pointer;
+    min-height: 50vh;
+}
+/* /CARDS STYLESHEET */

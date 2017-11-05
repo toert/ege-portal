@@ -1,70 +1,164 @@
 {% extends 'calculator/base.html' %}
 {% block title %}Калькулятор баллов{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="jumbotron">
-        <div class="container">
-            <h1>Выберите предметы</h1><br>
+<div class="container-fluid padded">
+    <div class="row">
+        <div class="col-12 col-md-4 push-md-8 col-lg-3 push-lg-9 bordered">
+            <h3 class="desc_h3">Выберите предметы</h3><br>
+            <form method="get" action="/calc/" class="" id="calculator">
+                {% for field in score_form %}
+                <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                    <div class="row">
+                        <div class="col-6 col-md-8 text-right">{{ field.label_tag }}</div>
+                        {% if field.name == 'sort_by' %}
 
+                        <div class="btn-group" data-toggle="buttons">
+                            {% for radio in score_form.sort_by %}
+                            <label class="btn btn-secondary">
+                                {{ radio }}
+                            </label>
+                            {% endfor %}
 
-                    <form method="get" action="/calc" class="">
-                        {% csrf_token %}
-                        {% for field in score_form %}
-                        <div class="form-group row">
-                            <label class="col-3 col-form-label">{{ field.label_tag }}</label>
-                            <div class="col-3">
-                                {{ field }}
+                        </div>
+                        {% else %}
+                        <div class="col-6 col-md-4">
+                            {{ field }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-info">Найти!</button>
+            </form>
+
+        </div>
+        <div class="col-12 col-md-8 pull-md-4 col-lg-9 pull-lg-3">
+            <div id="result_table">
+                <h2 class="desc_h2">Калькулятор баллов ЕГЭ</h2>
+                <br>
+                <p class="text-center"><b>Калькулятор ЕГЭ с статистикой выпускников</b> — это сервис, позволяющий
+                    выбрать ВУЗ и направление в нём,
+                    опираясь на данные выпускников за последние 3 года. Зачастую данные о средней зарплате и проценте
+                    трудоустройства могут говорить о качестве обучения, и о востребованности той или иной специальности
+                    в данный момент.
+                </p>
+                <section id="advantages">
+                    <div class="row">
+                        <div class="col-12 col-lg-4 text-center">
+                            <div class="service-item">
+                            <span class="fa-stack fa-2x">
+                                <i class="fa fa-circle fa-stack-2x" style="text-align:center;"></i>
+                                <i class="fa fa-check fa-stack-1x"></i>
+                            </span>
+                                <h4>
+                                    <strong>Проходные баллы</strong>
+                                </h4>
+                                <p>Используются только полностью правильные баллы, собранные с сайтов ВУЗов за последний
+                                    год</p>
                             </div>
                         </div>
-                        {% endfor %}
-                        <button type="submit" class="btn btn-info">Найти!</button>
-                    </form>
-
+                        <div class="col-12 col-lg-4 text-center">
+                            <div class="service-item">
+                            <span class="fa-stack fa-2x">
+                                <i class="fa fa-circle fa-stack-2x" style="text-align:center;"></i>
+                                <i class="fa fa-rub fa-stack-1x"></i>
+                            </span>
+                                <h4>
+                                    <strong>Зарплаты выпускников</strong>
+                                </h4>
+                                <p>На сайте представленны данные о средней зарплате выпускников конкретных направлений
+                                    в ВУЗах за последние 3 года</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-4 text-center">
+                            <div class="service-item">
+                            <span class="fa-stack fa-2x  text-center">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-users fa-stack-1x"></i>
+                            </span>
+                                <h4>
+                                    <strong>Процент трудоустройства</strong>
+                                </h4>
+                                <p>Также сайт предоставляет данные о трудоустройстве выпускников ВУЗов и направлений</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr>
+                <p><b>Информация о проходных баллах</b> в 2017 году собрана с сайтов ВУЗов, эти баллы будут несильно
+                    отличаться
+                    в 2018 году, так как каждый год проходной балл на определенные направления меняется незначительно.
+                </p>
+                <p><b>Информация о выпускника</b> получена из данных ПФР за 2015, 2016 и 2017 год. Представленные данные
+                    — это
+                    усредненные значения выпускников направлений и ВУЗов, собранные за год после их выпуска из учебных
+                    заведений</p>
+            </div>
         </div>
     </div>
+
 </div>
-    <!-- Example row of columns -->
-        <div id="result_table">
-
-        </div>
 
 
-     <script type="text/javascript">
-        function LoadHTML(url, tag_name) {
-            jqXHR = $.ajax({
-                     url: url ,
-                     type: "get",
-                     cache: true,
-                     timeout: 30000,
-                     dataType: 'html',
-                     async: false,
-                     success: function(data) {
-                         $(tag_name).html(data);
-                         $(".pagination").on('click', 'a', function(event) {
-                          console.log('Start');
-                          event.preventDefault();
-                          params = $('form').serialize();
-                          page_num = $(this).attr("href");
-                          action = document.getElementsByTagName("form")[0].getAttribute("action");
-                          result_table = LoadHTML(action+'?'+params+page_num, '#result_table');
-                        });
-                     },
-                     error: function(data) {
-                         console.log('error');
-                }
-              });
-        };
+<script type="text/javascript">
+    var action = document.getElementById("calculator").getAttribute("action");
 
-        $( document ).ready(function() {
-            document.getElementsByTagName("H1")[0].getAttribute("class");
-        });
-        $( "form" ).on( "submit", function( event ) {
-          event.preventDefault();
-          params = $(this).serialize();
-          action = document.getElementsByTagName("form")[0].getAttribute("action");
-          result_table = LoadHTML(action+'?'+params, '#result_table');
+
+    function LoadHTML(url, tag_name) {
+        $(tag_name).LoadingOverlay("show");
+        jqXHR = $.ajax({
+            url: url,
+            type: "get",
+            cache: true,
+            timeout: 30000,
+            dataType: 'html',
+            async: true,
+            success: function (data) {
+                $(tag_name).html(data);
+                $('html, body').animate({
+                    scrollTop: $("body").offset().top
+                }, 100);
+                $(".pagination").on('click', 'a', function (event) {
+                    event.preventDefault();
+                    page_num = $(this).attr("href");
+                    currentURL = window.location.search;
+                    WithChangedPageNum = currentURL.replace(/&page=\d/g, page_num);
+                    LoadHTML(action + WithChangedPageNum, '#result_table');
+                    window.history.pushState({page: page_num}, "", WithChangedPageNum);
+
+                });
+            },
+            error: function (data) {
+                console.log('error');
+            },
+            complete: function () {
+                $(tag_name).LoadingOverlay("hide");
+            }
         });
 
-     </script>
+
+    }
+
+
+    $(document).one('ready', function () {
+        if (window.location.search) {
+            LoadHTML(action + window.location.search, '#result_table');
+        }
+    });
+
+    window.onpopstate = function (event) {
+        LoadHTML(action + window.location.search, '#result_table');
+    };
+
+    $("form").on("submit", function (event) {
+        pageNum = 1;
+        event.preventDefault();
+        params = $($(this)[0].elements).not("input:not([value])").serialize();
+        paramsWithPage = "?" + params + "&page=" + pageNum;
+        LoadHTML(action + paramsWithPage, '#result_table');
+        window.history.pushState({page: 1}, "", paramsWithPage);
+    });
+
+</script>
 
 {% endblock %}

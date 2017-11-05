@@ -7,6 +7,12 @@ from calculator.forms import ExamsForm
 from universities.models import University, Program
 
 
+def calculator_page(request):
+    if request.method == 'GET':
+        return render(request, 'calculator/calculator_page.html',
+                      {'score_form': ExamsForm})
+
+
 class ProgramsCalculator(ListView):
     model = Program
     context_object_name = 'programs'

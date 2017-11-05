@@ -1,41 +1,45 @@
-<table class="table table-bordered">
-    <thead>
-    <tr>
-        <th>Проходной балл</th>
-        <th>Название ВУЗа</th>
-        <th>Факультет</th>
-        <th>Программа</th>
-        <th>Обычное имя</th>
-        <th>Зарплата</th>
-        <th>Предметы</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for program in programs %}
-    <tr>
-        <td>{{ program.second_passing_score }}</td>
-        <td>{{ program.university.name }}</td>
-        <td>{{ program.faculty }}</td>
-        <td>{{ program.full_name }}</td>
-        <td>{{ program.common_name }}</td>
-        <td>{% if program.average_salary %}
-            {{ program.average_salary|floatformat:"0" }}₽
-            {% else %}
-            Информация не представлена
-            {% endif %}
-        </td>
-        <td>{{ program.exams_as_string }}{% if program.custom_exam %}, {{program.custom_exam}} {% endif %}</td>
-        <td><a href="{% url 'calculator:program_details' program.id %}" class="btn btn-info">Подробнее»</a>
-        </td>
-    </tr>
+ {% for program in programs %}
+    <div class="card card-outline-info">
+        <div class="card-block">
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    <div class="card-title header"><a target="_blank" href="{% url 'calculator:program_details' program.id %}">{{ program.common_name }}</a></div>
+                    {% if program.full_name != program.common_name %}
+                    <div class="card-text">
+                        <div class="description">Профиль</div>
+                        {{ program.full_name }}
+                    </div>
+                    {% endif %}
+                    <p class="card-text">
+                    <div class=" description">Вступительные предметы</div>
+                    {{ program.exams_as_string }}{% if program.custom_exam %} + внутренние испытания{% endif %}
+                    </p>
+                    <a target="_blank" href="{% url 'calculator:university_details' program.university.id %}" class="card-link">
+                        <i class="fa fa-university" aria-hidden="true"></i>
+                        {{ program.university.name }}</a>
+                </div>
+                <div class="card-title col-12 col-md-3 right-card-column">
+                    <div class="row">
+                        <div class="col-6 col-md-12 text-center">
+                            <div class="description">Проходной балл</div>
+                            <div class="card-digits">{{ program.second_passing_score }}</div>
+                        </div>
+                        <div class="col-6 col-md-12 text-center">
+                            <div class="description">Cредняя зарплата</div>
+                            <div class="card-digits">{% if program.average_salary %}
+                            {{ program.average_salary|floatformat:"0" }}₽
+                            {% endif %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {% endfor %}
-    </tbody>
-</table>
 {% if is_paginated %}
   <ul class="pagination">
     {% if page_obj.has_previous %}
-      <li><a href="&page={{ page_obj.previous_page_number }}" class="pagination"">&laquo;</a></li>
+      <li><a href="&page={{ page_obj.previous_page_number }}" class="pagination">&laquo;</a></li>
     {% else %}
       <li class="disabled"><span>&laquo;</span></li>
     {% endif %}
