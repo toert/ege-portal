@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-12 col-md-4 push-md-8 col-lg-3 push-lg-9 bordered">
             <h3 class="desc_h3">Выберите предметы</h3><br>
-            <form method="get" action="/calc/" class="" id="calculator">
+            <form method="get" action="/calc/" id="calculator">
                 {% for field in score_form %}
                 <div class="form-group pmd-textfield pmd-textfield-floating-label">
                     <div class="row">
@@ -116,7 +116,7 @@
             success: function (data) {
                 $(tag_name).html(data);
                 $('html, body').animate({
-                    scrollTop: $("body").offset().top
+                    scrollTop: $("#result_table").offset().top
                 }, 100);
                 $(".pagination").on('click', 'a', function (event) {
                     event.preventDefault();
@@ -150,10 +150,14 @@
         LoadHTML(action + window.location.search, '#result_table');
     };
 
-    $("form").on("submit", function (event) {
+    $("#calculator").on("submit", function (event) {
+        console.log('START');
         pageNum = 1;
         event.preventDefault();
-        params = $($(this)[0].elements).not("input:not([value])").serialize();
+        params = $($(this)[0].elements).filter(function () {
+                    return $.trim(this.value).length > 0
+                }).serialize();
+        console.log(params);
         paramsWithPage = "?" + params + "&page=" + pageNum;
         LoadHTML(action + paramsWithPage, '#result_table');
         window.history.pushState({page: 1}, "", paramsWithPage);

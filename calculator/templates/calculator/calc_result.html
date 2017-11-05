@@ -1,4 +1,4 @@
- {% for program in programs %}
+{% for program in programs %}
     <div class="card card-outline-info">
         <div class="card-block">
             <div class="row">
@@ -28,32 +28,34 @@
                             <div class="description">Cредняя зарплата</div>
                             <div class="card-digits">{% if program.average_salary %}
                             {{ program.average_salary|floatformat:"0" }}₽
-                            {% endif %}</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    {% endfor %}
+</div>
+{% endfor %}
+<br>
 {% if is_paginated %}
-  <ul class="pagination">
+<ul class="pagination">
     {% if page_obj.has_previous %}
-      <li><a href="&page={{ page_obj.previous_page_number }}" class="pagination">&laquo;</a></li>
+    <li class="page-item"><a href="&page={{ page_obj.previous_page_number }}" class="page-link">&laquo;</a></li>
     {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
+    <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
     {% endif %}
     {% for i in paginator.page_range %}
-      {% if page_obj.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-      {% else %}
-        <li><a href="&page={{ i }}" class="pagination">{{ i }}</a></li>
-      {% endif %}
+    {% if page_obj.number == i %}
+    <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+    {% else %}
+    <li class="page-item"><a href="&page={{ i }}" class="page-link">{{ i }}</a></li>
+    {% endif %}
     {% endfor %}
     {% if page_obj.has_next %}
-      <li><a href="&page={{ page_obj.next_page_number }}" class="pagination">&raquo;</a></li>
+    <li class="page-item"><a href="&page={{ page_obj.next_page_number }}" class="page-link">&raquo;</a></li>
     {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
+    <li class="disabled page-item"><span>&raquo;</span></li>
     {% endif %}
-  </ul>
+</ul>
 {% endif %}
