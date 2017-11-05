@@ -13,6 +13,7 @@ class University(models.Model):
     )
 
     average_salary = models.FloatField()
+    continued_amount = models.PositiveIntegerField()
     employment_percentage = models.FloatField()
     graduate_id = models.CharField(max_length=255)
     has_military_department = models.BooleanField(default=False)
