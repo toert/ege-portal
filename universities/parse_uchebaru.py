@@ -161,7 +161,7 @@ def add_specialty(name, filepath='specialties.json'):
 def main():
     universities = []
     city = 'moscow'
-    collations = file_to_dict(city + '.json')
+    collations = file_to_dict('data/{}.json'.format(city))
     specialties = file_to_dict('data/all_specialties.json')
     for collation in collations:
         if collation['ucheba_url'] is None:
@@ -185,7 +185,7 @@ def main():
         graduate_university_info['programs'] = unioned_programs
         pprint(graduate_university_info)
         universities.append(graduate_university_info)
-    dict_to_file(universities, 'data/test_{}.json'.format(city))
+    dict_to_file(universities, 'data/prod1_{}.json'.format(city))
 
 
 def auto_collate_universities(graduate_universities, domain):

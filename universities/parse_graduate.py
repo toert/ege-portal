@@ -87,7 +87,7 @@ def parse_all_university_data(code):
             'name': program['d'],
             'code': program['s'],
             'salary': float(program['i'][2]) * 1000,
-            'employment': float(program['i'][3])
+            'employment': float(program['i'][3]) * 100
         })
     return university_data
 
