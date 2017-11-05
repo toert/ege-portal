@@ -3,9 +3,9 @@ import json
 from pprint import pprint
 import requests
 from bs4 import BeautifulSoup
-from universities.parse_graduate import parse_all_university_data, try_reconnect
+from universities.parse_graduate import parse_all_university_data, try_reconnect, fetch_universities_list
 
-SEARCH_URL = 'https://www.ucheba.ru/for-abiturients/vuz?eq[0]=__s:{query}'
+SEARCH_URL = 'https://{domain}.ucheba.ru/for-abiturients/vuz?eq[0]=__s:{query}'
 
 
 def parse_specialties(codes_amount, level='03'):
@@ -27,6 +27,7 @@ def parse_specialties(codes_amount, level='03'):
 @try_reconnect
 def fetch_soup(url, **kwargs):
     page = requests.get(url, params=kwargs)
+    print(page.url)
     return BeautifulSoup(page.content, 'html.parser')
 
 
@@ -47,27 +48,6 @@ def file_to_dict(filepath):
     with open(filepath, 'r', encoding='UTF-8') as file:
         return json.loads(file.read())
 
-
-def collate_universities(universities, done_universities, filepath='universities.json'):
-    mapping = []
-    for num, university in enumerate(universities):
-        print(university['name'])
-        if university['id'] in [x['graduate_id'] for x in done_universities]:
-            print('Found!')
-            mapping.append({
-                'graduate_id': university['id'],
-                'ucheba_url': [x['ucheba_url'] for x in done_universities if university['id'] == x['graduate_id']][0]
-            })
-            continue
-        univ_url = input('URL:')
-        if univ_url == 'exit':
-            print('Закончили на университете №{}'.format(num))
-            break
-        mapping.append({
-            'graduate_id': university['id'],
-            'ucheba_url': univ_url or None
-        })
-    dict_to_file(mapping, filepath)
 
 
 def extract_id_from_url(university_url):
@@ -146,6 +126,7 @@ def union_programs_from_ucheba_and_graduate(ucheba_program, graduate_programs, s
     soup = fetch_soup(ucheba_program['url'])
     program_info = collect_program_info(soup)
     program_info['ucheba_url'] = ucheba_program['url']
+    program_info['faculty'] = ucheba_program['faculty']
     program_salary = [salary for salary in graduate_programs if salary['name'] == program_info['common_name']] \
                      or [salary for salary in graduate_programs if salary['name'] == program_info['full_name']]
     if not program_salary:
@@ -179,9 +160,9 @@ def add_specialty(name, filepath='specialties.json'):
 
 def main():
     universities = []
-    city = 'spb'
+    city = 'moscow'
     collations = file_to_dict(city + '.json')
-    specialties = file_to_dict('all_specialties.json')
+    specialties = file_to_dict('data/all_specialties.json')
     for collation in collations:
         if collation['ucheba_url'] is None:
             continue
@@ -192,6 +173,7 @@ def main():
 
         print('Start new University')
         graduate_university_info['ucheba_url'] = collation['ucheba_url']
+        print(collation['ucheba_url'])
         domain, id = extract_id_from_url(collation['ucheba_url'])
         ucheba_programs = fetch_program_list_from_ucheba(domain, id)
         unioned_programs = []
@@ -203,7 +185,46 @@ def main():
         graduate_university_info['programs'] = unioned_programs
         pprint(graduate_university_info)
         universities.append(graduate_university_info)
-    dict_to_file(universities, 'test_{}.json'.format(city))
+    dict_to_file(universities, 'data/test_{}.json'.format(city))
+
+
+def auto_collate_universities(graduate_universities, domain):
+    print(len(graduate_universities))
+    collated = []
+    for university in graduate_universities:
+        soup = fetch_soup(SEARCH_URL.format(domain=domain,
+                                     query=university['name']))
+        titles = soup.find_all('h2', {'class':'search-results-title'})
+        if len(titles) == 1:
+            href = titles[0].find('a', href=True)['href']
+        elif len(titles) > 1:
+            same_title = [title for title in titles if title.find('a').text == university['name']]
+            if same_title:
+                href = same_title[0].find('a', href=True)['href']
+            else:
+                print('________')
+                print(university['name'], ':')
+                for num, title in enumerate(titles):
+                    print(num+1, title.find('a').text)
+                choice = input('Your:')
+                if choice == 'q':
+                    continue
+                href = titles[int(choice)-1].find('a', href=True)['href']
+        elif len(titles) < 1:
+            print('not found {}'.format(university['name']))
+            href = input('Enter:')
+        collated.append({'graduate_id': university['id'],
+                         'ucheba_url': 'https://{}.ucheba.ru{}'.format(domain, href)})
+    return collated
+
 
 if __name__ == '__main__':
     main()
+    # done = file_to_dict('auto_spb.json')
+    # done_universities_id = [pair['graduate_id'] for pair in done if pair['ucheba_url']]
+    # #done_universities_id = []
+    # universities = fetch_universities_list()['data']
+    # pprint(universities)
+    # collated = auto_collate_universities([univer for univer in universities if univer['region_id'] == '40'
+    #                            and univer['id'] not in done_universities_id and univer['type_id']=='1'], 'spb')
+    # dict_to_file(collated.extend(done), 'auto_spb.json')

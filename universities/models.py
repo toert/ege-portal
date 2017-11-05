@@ -54,6 +54,7 @@ class Program(models.Model):
     custom_exam = models.CharField(max_length=511, blank=True, null=True)
     duration = models.PositiveIntegerField(null=True, blank=True)
     employment_percentage = models.FloatField(blank=True, null=True)
+    faculty = models.CharField(max_length=255, blank=True, null=True)
     first_passing_score = models.PositiveIntegerField(blank=True, null=True)
     full_name = models.CharField(max_length=255)
     form = models.CharField(max_length=64, choices=FORMS)
@@ -62,6 +63,9 @@ class Program(models.Model):
     places = models.PositiveIntegerField(null=True)
     ucheba_url = models.CharField(max_length=255)
     year = models.PositiveIntegerField()
+
+    def __str__(self):
+        return '{}'.format(self.full_name)
 
     @property
     def exams_as_list(self):
@@ -76,9 +80,9 @@ class Program(models.Model):
     def is_suitable(self, exam_form_data):
         required_exams = self.exams_as_list
         selected_exams = [exam for exam, score in exam_form_data.items() if score]
-        selected_score = sum([score for exam, score in exam_form_data.items() if score and exam in required_exams])
+        selected_score = sum([int(score) for exam, score in exam_form_data.items() if score and exam in required_exams])
         if all(exam in selected_exams for exam in required_exams) and self.second_passing_score:
-            if selected_score >= self.second_passing_score:
+            if selected_score >= self.second_passing_score or exam_form_data.get('is_custom_exam_taken', None):
                 return True
         return False
 
@@ -110,4 +114,7 @@ class RequiredExam(models.Model):
 
     program = models.ForeignKey(Program, related_name='exams')
     exam = models.CharField(max_length=3, choices=EXAMS)
+
+    def __str__(self):
+        return '{}-{}'.format(self.program.name, self.exam)
 

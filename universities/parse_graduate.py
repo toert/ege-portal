@@ -62,7 +62,6 @@ def fetch_university_programs(code):
                         'slice1': [code],
                         'slice9': ["1", "9"],
                         'slice23': ["2013", "2014", "2015"]
-                        # 'slice30': [str(year)]
                     }}}
     headers = HEADERS
     return requests.post(url, headers=headers, data=json.dumps(payload)).json()
@@ -74,6 +73,9 @@ def parse_all_university_data(code):
         university_data = fetch_university_info(code, 2014)['data']['data']
         if university_data['avg_wage'] is None:
             return None
+    university_data['avg_wage'] = float(university_data['avg_wage']) * 1000
+    university_data['working_percent'] = float(university_data['working_percent']) * 100
+    university_data['continued_amount'] = int(university_data['num_continued'])/int(university_data['num_approved'])*100
     programs_data = fetch_university_programs(code)['data']['data']
     all_programs = programs_data[0]
     all_programs.extend(programs_data[1])
@@ -91,7 +93,16 @@ def parse_all_university_data(code):
 
 
 if __name__ == '__main__':
-    pprint(parse_all_university_data('07B9F5809B5031B9A484F4F1525D56B4'))
+    universities = fetch_universities_list()['data']
+    for university in universities:
+        university_data = fetch_university_info(university['id'], 2015)['data']['data']
+        if university_data['avg_wage'] is None:
+            university_data = fetch_university_info(university['id'], 2014)['data']['data']
+            if university_data['avg_wage'] is None:
+                continue
+    pprint(universities)
+    # pprint(parse_all_university_data('07B9F5809B5031B9A484F4F1525D56B4'))
+    pprint(fetch_university_info('028C6D7292E60AAD7453B0799CB59FD8', 2015))
     exit()
     pprint(fetch_university_info('028C6D7292E60AAD7453B0799CB59FD8', 2015))
     universities = fetch_universities_list()

@@ -34,6 +34,7 @@ class Command(BaseCommand):
             if university_in_db.exists():
                 university_in_db = university_in_db.first()
                 if options['delete']:
+                    [program.delete() for program in university_in_db.programs.all()]
                     university_in_db.delete()
                     university_in_db = self.create_university_object_from_dict(university)
             else:
@@ -44,10 +45,9 @@ class Command(BaseCommand):
                 program_in_db = Program.objects.filter(
                     university=university_in_db,
                     full_name=program['full_name'],
+                    faculty=program['faculty'],
                     year=settings.LAST_EGE_YEAR
                 )
-                if options['delete']:
-                    program_in_db.delete()
                 if not program_in_db.exists() and 'exams' in program:
                     program_in_db = self.create_program_object_from_dict(program, university_in_db)
                     for exam in program['exams']['ege']:
@@ -68,6 +68,7 @@ class Command(BaseCommand):
 
         return University.objects.create(
             average_salary=data['avg_wage'],
+            continued_amount=data['continued_amount'],
             employment_percentage=data['working_percent'],
             graduate_id=data['id'],
             name=data['name'],
@@ -89,6 +90,7 @@ class Command(BaseCommand):
             duration=data['duration'],
             employment_percentage=data.get('employment', None),
             custom_exam=data['exams']['custom'],
+            faculty=data['faculty'],
             form=form,
             full_name=data['full_name'],
             level=level,
