@@ -18,7 +18,7 @@ class ExamsForm(forms.Form):
 
     is_custom_exam_taken = forms.BooleanField(required=False, label="Готовы сдавать внутренние испытания ВУЗов?")
     sort_by = forms.ChoiceField(choices=[('salary', 'Зарплате'), ('score', 'Проходному баллу')], label='Сортировать по',
-                                widget=forms.RadioSelect, initial=1)
+                                widget=forms.RadioSelect, initial='salary')
 
     def __init__(self, *args, **kwargs):
         super(ExamsForm, self).__init__(*args, **kwargs)
