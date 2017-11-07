@@ -9,6 +9,11 @@
                         <div class="description">Профиль</div>
                         {{ program.full_name }}
                     </div>
+                    {% elif program.faculty %}
+                    <div class="card-text">
+                        <div class="description">Факультет</div>
+                        {{ program.faculty }}
+                    </div>
                     {% endif %}
                     <p class="card-text">
                     <div class=" description">Вступительные предметы</div>
@@ -22,11 +27,12 @@
                     <div class="row">
                         <div class="col-6 col-md-12 text-center">
                             <div class="description">Проходной балл</div>
-                            <div class="card-digits">{{ program.second_passing_score }}</div>
+                            <div class="card-digits">{{ program.average_score|floatformat:2 }}</div>
                         </div>
+                        {% if program.average_salary %}
                         <div class="col-6 col-md-12 text-center">
                             <div class="description">Cредняя зарплата</div>
-                            <div class="card-digits">{% if program.average_salary %}
+                            <div class="card-digits">
                             {{ program.average_salary|floatformat:"0" }}₽
                             {% endif %}
                         </div>

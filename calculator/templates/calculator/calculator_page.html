@@ -11,15 +11,21 @@
                     <div class="row">
                         <div class="col-6 col-md-8 text-right">{{ field.label_tag }}</div>
                         {% if field.name == 'sort_by' %}
+                        <div class="col-12 text-center">
+                            <div class="btn-group" data-toggle="buttons">
+                                {% for radio in score_form.sort_by %}
+                                <label class="btn btn-secondary btn-sm">
+                                    {{ radio }}
+                                </label>
+                                {% endfor %}
 
-                        <div class="btn-group" data-toggle="buttons">
-                            {% for radio in score_form.sort_by %}
-                            <label class="btn btn-secondary">
-                                {{ radio }}
-                            </label>
-                            {% endfor %}
-
+                            </div>
                         </div>
+                        {% elif field.name == 'city' %}
+                        <div class="col-12">
+                            {{ field }}
+                        </div>
+
                         {% else %}
                         <div class="col-6 col-md-4">
                             {{ field }}
@@ -28,7 +34,10 @@
                     </div>
                 </div>
                 {% endfor %}
-                <button type="submit" class="btn btn-info">Найти!</button>
+                <br>
+                <div class="container text-center">
+                    <button type="submit" class="btn btn-info btn-block">Найти!</button>
+                </div>
             </form>
 
         </div>

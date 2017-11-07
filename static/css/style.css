@@ -46,6 +46,7 @@ i.fa-circle {
     padding: 15px; /* Поля вокруг текста */
     margin-bottom: 10px; /* Отступ снизу */
     border-radius: 8px;
+    max-height: max-content;
    }
 input.score {
     width: 56px;
@@ -100,3 +101,13 @@ input.score {
 }
 
 /* /CARDS STYLESHEET */
+
+select.score {
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#calculator button[type="submit"] {
+
+}

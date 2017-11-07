@@ -74,6 +74,16 @@ class Program(models.Model):
         return [ex.exam for ex in required_exams_for_program]
 
     @property
+    def average_score(self):
+        if not self.second_passing_score:
+            return 0
+        if not self.custom_exam:
+            required_exams_for_program = self.exams.all()
+            return self.second_passing_score / len(required_exams_for_program)
+        else:
+            return self.second_passing_score
+
+    @property
     def exams_as_string(self):
         named_slugs = dict(RequiredExam.EXAMS)
         return ', '.join([named_slugs[slug] for slug in self.exams_as_list])
