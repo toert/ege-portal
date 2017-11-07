@@ -4,17 +4,24 @@
 <div class="container-fluid padded">
     <div class="row">
         <div class="col-12 col-md-4 push-md-8 col-lg-3 push-lg-9 bordered">
-            <h3 class="desc_h3">Выберите предметы</h3><br>
+            <h3 class="c">Выберите предметы</h3><br>
             <form method="get" action="/calc/" id="calculator">
                 {% for field in score_form %}
                 <div class="form-group pmd-textfield pmd-textfield-floating-label">
                     <div class="row">
                         <div class="col-6 col-md-8 text-right">{{ field.label_tag }}</div>
-                        {% if field.name == 'sort_by' %}
+                        {% if field.name == 'is_custom_exam_taken' %}
+                        <div class="col-3">
+                        <label class="custom-control custom-checkbox">
+                        {{ field }}
+                        <span class="custom-control-indicator"></span>
+                        </label>
+                            </div>
+                        {% elif field.name == 'sort_by' %}
                         <div class="col-12 text-center">
                             <div class="btn-group" data-toggle="buttons">
                                 {% for radio in score_form.sort_by %}
-                                <label class="btn btn-secondary btn-sm">
+                                <label class="btn btn-secondary btn-sm {% if forloop.first %}active{% endif %}">
                                     {{ radio }}
                                 </label>
                                 {% endfor %}
@@ -25,7 +32,6 @@
                         <div class="col-12">
                             {{ field }}
                         </div>
-
                         {% else %}
                         <div class="col-6 col-md-4">
                             {{ field }}
@@ -47,7 +53,7 @@
                 <br>
                 <p class="text-center"><b>Калькулятор ЕГЭ с статистикой выпускников</b> — это сервис, позволяющий
                     выбрать ВУЗ и направление в нём,
-                    опираясь на данные выпускников за последние 3 года. Зачастую данные о средней зарплате и проценте
+                    опираясь на данные выпускников за последние 3 года. Зачастую данные о средней заработной плате и проценте
                     трудоустройства могут говорить о качестве обучения, и о востребованности той или иной специальности
                     в данный момент.
                 </p>
@@ -62,8 +68,8 @@
                                 <h4>
                                     <strong>Проходные баллы</strong>
                                 </h4>
-                                <p>Используются только полностью правильные баллы, собранные с сайтов ВУЗов за последний
-                                    год</p>
+                                <p>Используются только верные данные, автоматически собранные с сайтов ВУЗов за последний
+                                    год.</p>
                             </div>
                         </div>
                         <div class="col-12 col-lg-4 text-center">
@@ -73,7 +79,7 @@
                                 <i class="fa fa-rub fa-stack-1x"></i>
                             </span>
                                 <h4>
-                                    <strong>Зарплаты выпускников</strong>
+                                    <strong>Заработные платы выпускников</strong>
                                 </h4>
                                 <p>На сайте представленны данные о средней зарплате выпускников конкретных направлений
                                     в ВУЗах за последние 3 года</p>
@@ -98,7 +104,7 @@
                     отличаться
                     в 2018 году, так как каждый год проходной балл на определенные направления меняется незначительно.
                 </p>
-                <p><b>Информация о выпускника</b> получена из данных ПФР за 2015, 2016 и 2017 год. Представленные данные
+                <p><b>Информация о выпускниках</b> получена из данных ПФР за 2015, 2016 и 2017 год. Представленные данные
                     — это
                     усредненные значения выпускников направлений и ВУЗов, собранные за год после их выпуска из учебных
                     заведений</p>

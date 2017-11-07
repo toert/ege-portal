@@ -18,7 +18,7 @@ class ExamsForm(forms.Form):
 
     is_custom_exam_taken = forms.BooleanField(required=False, label="Готовы сдавать внутренние испытания ВУЗов?")
     sort_by = forms.ChoiceField(choices=[('salary', 'Зарплате'), ('score', 'Проходному баллу')], label='Сортировать по',
-                                widget=forms.RadioSelect, initial='salary')
+                                widget=forms.RadioSelect, initial=1)
 
     def __init__(self, *args, **kwargs):
         super(ExamsForm, self).__init__(*args, **kwargs)
@@ -29,6 +29,7 @@ class ExamsForm(forms.Form):
         )
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control score'
+        self.fields['is_custom_exam_taken'].widget.attrs['class'] += ' custom-control-input'
 
     def exams(self):
         existed_exams = [slug for name, slug in RequiredExam.EXAMS]

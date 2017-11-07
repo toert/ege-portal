@@ -1,14 +1,11 @@
 {% extends 'calculator/base.html' %}
 {% block content %}
-<br><br><br><hr>
-
-<table class="table table-bordered">
+<div class="container">
+    <h3 class="desc_h3 text-center">{{ university.name }}</h3>
+    <hr>
+    <table class="table table-bordered table-hover">
 
     <tbody>
-    <tr>
-        <td>Название университета</td>
-        <td>{{ university.name }}</td>
-    </tr>
 
     <tr>
         <td>Местоположение</td>
@@ -21,63 +18,63 @@
     <tr>
         <td>Процент трудоустройства</td>
         <td>
-            {{ university.employment_percentage|floatformat:2 }}%
+            {{ university.employment_percentage|floatformat:1 }}%
         </td>
     </tr>
     <tr>
         <td>Процент выпускников, продолживших обучение</td>
         <td>
-            {{ university.continued_amount|floatformat:2 }}%
+            {{ university.continued_amount|floatformat:1 }}%
         </td>
     </tr>
-
-
     </tbody>
 </table>
-    <div class="container">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Проходной балл</th>
-                    <th>Название ВУЗа</th>
-                    <th>Программа</th>
-                    <th>Обычное имя</th>
-                    <th>Заработная плата</th>
-                    <th>Предметы</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for program in university.programs.all %}
-                <tr>
-                    <td>{{ program.second_passing_score }}</td>
-                    <td>{{ program.university.name}}</td>
-                    <td>{{ program.full_name }}</td>
-                    <td>{{ program.common_name }}</td>
-                    <td>{% if program.average_salary %}
-                            {{ program.average_salary|floatformat:"0" }}₽
-                        {% else %}
-                            Информация не представлена
-                        {% endif %}
-                    </td>
-                    <td>{{ program.exams_as_string }}</td>
+</div>
+<div class="container">
+    {% for program in university.programs.all %}
+    <div class="card card-outline-info">
+        <div class="card-block">
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    <div class="card-title header"><a target="_blank"
+                                                      href="{% url 'calculator:program_details' program.id %}">
+                        {{ program.common_name }}</a></div>
+                    {% if program.full_name != program.common_name %}
+                    <div class="card-text">
+                        <div class="description">Профиль</div>
+                        {{ program.full_name }}
+                    </div>
+                    {% elif program.faculty %}
+                    <div class="card-text">
+                        <div class="description">Факультет</div>
+                        {{ program.faculty }}
+                    </div>
+                    {% endif %}
+                    <p class="card-text">
+                    <div class="description">Вступительные предметы</div>
+                    {{ program.exams_as_string }}{% if program.custom_exam %} + внутренние испытания{% endif %}
+                    </p>
 
-                    <td><a href="{% url 'calculator:program_details' program.id %}" class="btn btn-info">Подробнее»</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-      </table>
+                </div>
+                <div class="card-title col-12 col-md-3 right-card-column">
+                    <div class="row">
+                        <div class="col-6 col-md-12 text-center">
+                            <div class="description">Проходной балл</div>
+                            <div class="card-digits">{{ program.average_score|floatformat:2 }}</div>
+                        </div>
+                        {% if program.average_salary %}
+                        <div class="col-6 col-md-12 text-center">
+                            <div class="description">Cредняя заработная плата</div>
+                            <div class="card-digits">
+                                {{ program.average_salary|floatformat:"0" }}₽
+                            </div>
+                        </div>
+                         {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!--average_salary = models.FloatField()-->
-    <!--employment_percentage = models.FloatField()-->
-    <!--graduate_id = models.CharField(max_length=255)-->
-    <!--has_military_department = models.BooleanField(default=False)-->
-    <!--has_dormitory = models.BooleanField(default=False)-->
-    <!--region_name = models.CharField(max_length=255)-->
-    <!--type = models.CharField(max_length=3, choices=TYPES)-->
-    <!--ucheba_url = models.CharField(max_length=255)-->
-    <!--year = models.PositiveIntegerField()-->
-
+    {% endfor %}
+    </div>
 {% endblock %}
