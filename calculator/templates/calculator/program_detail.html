@@ -1,6 +1,6 @@
 {% extends 'calculator/base.html' %}
 {% block content %}
-<br><br><br><hr>
+<br>
 
 <table class="table table-bordered">
 
@@ -11,8 +11,14 @@
     </tr>
     <tr>
         <td>Специальность</td>
-        <td>{{ program.full_name }} ({{ program.common_name }})</td>
+        <td>{{ program.common_name }}</td>
     </tr>
+    {% if program.full_name != program.common_name %}
+    <tr>
+        <td>Профиль</td>
+        <td>{{ program.full_name }}</td>
+    </tr>
+    {% endif %}
     <tr>
         <td>Название университета</td>
         <td><a href="{% url 'calculator:university_details' program.university.id %}">{{ program.university.name }}</a></td>
@@ -21,24 +27,28 @@
         <td>Проходной балл</td>
         <td>{{ program.second_passing_score }}</td>
     </tr>
+    {% if program.average_salary %}
     <tr>
-        <td>Средняя зарплата</td>
-        <td>{% if program.average_salary %}
+        <td>Средняя заработная плата</td>
+        <td>
             {{ program.average_salary|floatformat:"0" }}₽
             {% else %}
             Информация не представлена
-            {% endif %}
+
         </td>
     </tr>
+    {% endif %}
+    {% if program.employment_percentage %}
     <tr>
         <td>Процент трудоустройства</td>
-        <td>{% if program.employment_percentage %}
-            {{ program.employment_percentage }}% * 100
+        <td>
+            {{ program.employment_percentage|floatformat:2 }}%
             {% else %}
             Информация не представлена
-            {% endif %}
+
         </td>
     </tr>
+    {% endif %}
     <tr>
         <td>Вступительные испытания</td>
         <td>ЕГЭ: {{ program.exams_as_string }}

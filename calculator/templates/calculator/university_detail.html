@@ -21,7 +21,13 @@
     <tr>
         <td>Процент трудоустройства</td>
         <td>
-            {{ university.employment_percentage }}%
+            {{ university.employment_percentage|floatformat:2 }}%
+        </td>
+    </tr>
+    <tr>
+        <td>Процент выпускников, продолживших обучение</td>
+        <td>
+            {{ university.continued_amount|floatformat:2 }}%
         </td>
     </tr>
 
@@ -36,7 +42,7 @@
                     <th>Название ВУЗа</th>
                     <th>Программа</th>
                     <th>Обычное имя</th>
-                    <th>Зарплата</th>
+                    <th>Заработная плата</th>
                     <th>Предметы</th>
                     <th></th>
                 </tr>
@@ -55,6 +61,7 @@
                         {% endif %}
                     </td>
                     <td>{{ program.exams_as_string }}</td>
+
                     <td><a href="{% url 'calculator:program_details' program.id %}" class="btn btn-info">Подробнее»</a>
                     </td>
                 </tr>
