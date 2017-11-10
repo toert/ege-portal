@@ -111,3 +111,13 @@ select.score {
 #calculator button[type="submit"] {
 
 }
+
+hr.short {
+width: 60px;
+height: 3px;
+margin-left: auto;
+margin-right: auto;
+background-color: #5bc0eb;
+color: #5bc0eb;
+border: 0 none;
+}
