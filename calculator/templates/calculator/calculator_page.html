@@ -51,7 +51,7 @@
             <div id="result_table">
                 <h2 class="desc_h2">Калькулятор баллов ЕГЭ</h2>
                 <br>
-                <p class="text-center"><b>Калькулятор ЕГЭ с статистикой выпускников</b> — это сервис, позволяющий
+                <p><b>Калькулятор ЕГЭ с статистикой выпускников</b> — это сервис, позволяющий
                     выбрать ВУЗ и направление в нём,
                     опираясь на данные выпускников за последние 3 года. Зачастую данные о средней заработной плате и проценте
                     трудоустройства могут говорить о качестве обучения, и о востребованности той или иной специальности
@@ -99,7 +99,7 @@
                         </div>
                     </div>
                 </section>
-                <hr>
+                <br>
                 <p><b>Информация о проходных баллах</b> в 2017 году собрана с сайтов ВУЗов, эти баллы будут несильно
                     отличаться
                     в 2018 году, так как каждый год проходной балл на определенные направления меняется незначительно.
@@ -137,7 +137,7 @@
                     event.preventDefault();
                     page_num = $(this).attr("href");
                     currentURL = window.location.search;
-                    WithChangedPageNum = currentURL.replace(/&page=\d/g, page_num);
+                    WithChangedPageNum = currentURL.replace(/&page=\d+/g, page_num);
                     LoadHTML(action + WithChangedPageNum, '#result_table');
                     window.history.pushState({page: page_num}, "", WithChangedPageNum);
 

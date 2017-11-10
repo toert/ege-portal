@@ -15,10 +15,10 @@
                         {{ program.faculty }}
                     </div>
                     {% endif %}
-                    <p class="card-text">
+                    <div class="card-text">
                     <div class=" description">Вступительные предметы</div>
                     {{ program.exams_as_string }}{% if program.custom_exam %} + внутренние испытания{% endif %}
-                    </p>
+                    </div>
                     <a target="_blank" href="{% url 'calculator:university_details' program.university.id %}" class="card-link">
                         <i class="fa fa-university" aria-hidden="true"></i>
                         {{ program.university.name }}</a>

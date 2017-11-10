@@ -50,17 +50,17 @@
                         {{ program.faculty }}
                     </div>
                     {% endif %}
-                    <p class="card-text">
+                    <div class="card-text">
                     <div class="description">Вступительные предметы</div>
                     {{ program.exams_as_string }}{% if program.custom_exam %} + внутренние испытания{% endif %}
-                    </p>
+                    </div>
 
                 </div>
                 <div class="card-title col-12 col-md-3 right-card-column">
                     <div class="row">
                         <div class="col-6 col-md-12 text-center">
                             <div class="description">Проходной балл</div>
-                            <div class="card-digits">{{ program.average_score|floatformat:2 }}</div>
+                            <div class="card-digits">{{ program.second_passing_score }}</div>
                         </div>
                         {% if program.average_salary %}
                         <div class="col-6 col-md-12 text-center">
