@@ -104,4 +104,4 @@ ENV/
 .idea/
 
 # production
-venv/config/settings/production.py
+config/settings/production.py
