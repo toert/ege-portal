@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /admin/
+Host: http://egecalc.ru/
