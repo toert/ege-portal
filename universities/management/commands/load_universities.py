@@ -81,7 +81,6 @@ class Command(BaseCommand):
     def create_program_object_from_dict(self, data, university):
         form = [slug for slug, name in Program.FORMS if name==data['form']][0]
         level = [slug for slug, name in Program.LEVELS if name == data['level']][0]
-        pprint(data)
         return Program.objects.create(
             university=university,
             code=data.get('code', ''),
