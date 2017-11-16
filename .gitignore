@@ -102,3 +102,6 @@ ENV/
 
 # other
 .idea/
+
+# production
+venv/config/settings/production.py
