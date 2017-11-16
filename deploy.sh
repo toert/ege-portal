@@ -72,6 +72,12 @@ function clone {
 }
 
 
+function get_dir_path {
+    filepath=$(git rev-parse --show-toplevel)
+    echo $filepath
+}
+
+
 function create_db {
     sudo -u postgres psql -c "psql -c \"CREATE DATABASE $1\""
     sudo -u postgres psql -c "psql -c \"CREATE USER $2 WITH PASSWORD '$3';\""
@@ -79,12 +85,11 @@ function create_db {
 }
 
 username=toerting
-cd /Users/MacBook/Desktop/
-echo Git HTTP/HTTPS URL:
-read git_url
+cd /opt/
 echo Domain URL:
 read domain
-project_dir=$(clone $git_url)
+project_dir=$(get_dir_path)
+cd ../
 
 install_packages
 virtualenv venv
@@ -93,9 +98,9 @@ cd $project_dir
 pip3 install -r requirements.txt
 echo Want continue?
 read continue
-create_db ege_db admin admin1703
-echo Want continue?
-read continue
 cd /etc/nginx/sites-available/
 configure_nginx $domain $project_dir
 configure_supervisor $project_dir $username
+echo Want continue?
+read continue
+create_db ege_db admin admin1703
