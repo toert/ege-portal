@@ -32,6 +32,7 @@ server {
 
 
 function configure_supervisor {
+    echo $1
     supervisor_config="
 [program:start_server]
 command=/bin/bash $1/start_server
@@ -47,8 +48,8 @@ priority=997"
     echo -e "$supervisor_config" > /etc/supervisor/conf.d/start_server.conf
     supervisorctl reread
     supervisorctl update
-    supervisorctl status myproject
-    supervisor restart myproject
+    supervisorctl status start_server
+    supervisorctl restart start_server
 }
 
 
@@ -72,29 +73,28 @@ function clone {
 }
 
 
-function get_dir_path {
-    filepath=$(git rev-parse --show-toplevel)
-    echo $filepath
-}
-
 
 function create_db {
-    sudo -u postgres psql -c "psql -c \"CREATE DATABASE $1\""
-    sudo -u postgres psql -c "psql -c \"CREATE USER $2 WITH PASSWORD '$3';\""
-    sudo -u postgres psql -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE $1 TO $2;\""
+    sudo -u postgres psql -c "CREATE DATABASE $1;"
+    sudo -u postgres psql -c "CREATE USER $2 WITH PASSWORD '$3';"
+    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $1 TO $2;"
 }
 
 username=toerting
+project_dir=$(git rev-parse --show-toplevel)
 cd /opt/
 echo Domain URL:
 read domain
-project_dir=$(get_dir_path)
+echo $project_dir
+echo Want continue?
+read continue
 cd ../
 
 install_packages
 virtualenv venv
 source venv/bin/activate
 cd $project_dir
+ls $project_dir
 pip3 install -r requirements.txt
 echo Want continue?
 read continue
