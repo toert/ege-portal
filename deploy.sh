@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 
-
 function configure_nginx {
     nginx_config="
 server {
@@ -22,8 +21,6 @@ server {
     }
   }
 "
-    nginx_config=${nginx_config//server_placeholer/$1}
-    nginx_config=${nginx_config//root_placeholer/$2}
     filepath=/etc/nginx/sites-available/default
     echo -e "$nginx_config" > $filepath
     sudo ln -s $filepath /etc/nginx/sites-enabled
@@ -35,7 +32,7 @@ function configure_supervisor {
     echo $1
     supervisor_config="
 [program:start_server]
-command=/bin/bash $1/start_server
+command=/bin/bash $1/start_server.sh
 user=$2
 numprocs=1
 autostart=true
@@ -69,9 +66,7 @@ function clone {
     cd $(basename $1 .git)
     filepath=$(git rev-parse --show-toplevel)
     echo $filepath
-    cd ../
 }
-
 
 
 function create_db {
@@ -80,26 +75,28 @@ function create_db {
     sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $1 TO $2;"
 }
 
+
+function pause {
+    echo Want continue?
+    read continue
+}
+
+
 username=toerting
 project_dir=$(git rev-parse --show-toplevel)
-cd /opt/
 echo Domain URL:
 read domain
-echo $project_dir
-echo Want continue?
-read continue
 
 install_packages
 virtualenv venv
 source venv/bin/activate
 cd $project_dir
-ls $project_dir
 pip3 install -r requirements.txt
-echo Want continue?
-read continue
+pause
+
 cd /etc/nginx/sites-available/
 configure_nginx $domain $project_dir
 configure_supervisor $project_dir $username
-echo Want continue?
-read continue
+pause
+
 create_db ege_db admin admin1703
