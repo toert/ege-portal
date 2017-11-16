@@ -88,7 +88,6 @@ read domain
 echo $project_dir
 echo Want continue?
 read continue
-cd ../
 
 install_packages
 virtualenv venv
