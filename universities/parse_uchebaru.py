@@ -84,7 +84,6 @@ def normalize_number(string):
     try:
         return int(string)
     except ValueError as e:
-        print(e)
         return None
 
 
@@ -142,7 +141,6 @@ def union_programs_from_ucheba_and_graduate(ucheba_program, graduate_programs, s
 
 
 def find_specialty_group(specialty_name, all_specialties):
-    print(specialty_name)
     for code, data in all_specialties.items():
         if specialty_name not in data['programs']:
             continue
@@ -161,7 +159,7 @@ def add_specialty(name, filepath='specialties.json'):
 def main():
     universities = []
     slug = 'test1'
-    city = 'moscow'
+    city = 'spb'
     collations = file_to_dict('data/{}.json'.format(city))
     specialties = file_to_dict('data/all_specialties.json')
     for collation in collations:
