@@ -24,6 +24,9 @@ class University(models.Model):
     ucheba_url = models.CharField(max_length=255)
     year = models.PositiveIntegerField()
 
+    def sorted_programs(self):
+        return self.programs.order_by(models.F('average_salary').desc(nulls_last=True))
+
     def __str__(self):
         return '{}'.format(self.name)
 
