@@ -60,7 +60,7 @@
                     <div class="row">
                         <div class="col-6 col-md-12 text-center">
                             <div class="description">Проходной балл</div>
-                            <div class="card-digits">{{ program.second_passing_score }}</div>
+                            <div class="card-digits">{% if program.second_passing_score %}{{ program.second_passing_score }}{% else %}?{% endif %}</div>
                         </div>
                         {% if program.average_salary %}
                         <div class="col-6 col-md-12 text-center">
