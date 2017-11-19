@@ -121,3 +121,7 @@ background-color: #5bc0eb;
 color: #5bc0eb;
 border: 0 none;
 }
+
+.pagination {
+    overflow: scroll;
+}
