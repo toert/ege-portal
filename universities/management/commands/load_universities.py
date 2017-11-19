@@ -53,7 +53,7 @@ class Command(BaseCommand):
                     for exam in program['exams']['ege']:
                         RequiredExam.objects.create(
                             program=program_in_db,
-                            exam=[slug for slug, name in RequiredExam.EXAMS if name == exam][0]
+                            exam=[slug for slug, name in RequiredExam.EXAMS if name.lower() == exam.lower()][0]
                         )
 
         self.stdout.write(self.style.SUCCESS('Done!'))
