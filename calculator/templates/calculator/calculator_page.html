@@ -133,6 +133,7 @@
                 $('html, body').animate({
                     scrollTop: $("#result_table").offset().top
                 }, 100);
+                $(".pagination").rPage();
                 $(".pagination").on('click', 'a', function (event) {
                     event.preventDefault();
                     page_num = $(this).attr("href");
@@ -179,5 +180,5 @@
     });
 
 </script>
-
+<script src="/static/js/responsive-paginate.js"></script>
 {% endblock %}

@@ -125,3 +125,11 @@ border: 0 none;
 .pagination {
     overflow: scroll;
 }
+
+.pagination li:first-child {
+    margin-left: auto;
+}
+
+.pagination li:last-child {
+    margin-right: auto;
+}
