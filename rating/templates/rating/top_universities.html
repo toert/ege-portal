@@ -1,4 +1,6 @@
 {% extends 'calculator/base.html' %}
+{% block description %}Рейтинг ВУЗов Москвы и Санкт-Петербурга с зарплатами выпускников{% endblock %}
+{% block keywords %}рейтинг вузов, рейтинг университетов, зарплаты выпускников, вузы, Москвы, Санкт-Петербурга{% endblock %}
 {% block title %}Рейтинг университетов по заработной плате{% endblock %}
 {% block content %}
 {% regroup universities by region_name as cities %}
@@ -12,7 +14,7 @@
     </p>
 
     <ul class="nav nav-tabs tab">
-        {% for city in cities|slice:'::-1' %}
+        {% for city in cities %}
         <li class="tablinks nav-item{% if forloop.first %} active{% endif %}" onclick="openCity(event, '{{ city.grouper }}')">
             <a class="tablinks nav-link" href="#">{{ city.grouper }}</a>
         </li>

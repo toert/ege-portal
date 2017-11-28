@@ -1,5 +1,8 @@
 {% extends 'calculator/base.html' %}
-{% block title %}{{ program.full_name }} зарплата{% endblock %}
+{% block description %}{{ program.common_name }} в {{ program.university.name }}, подробная статистика зарплаты
+выпускников и проходных баллов ЕГЭ 2018{% endblock %}
+{% block keywords %}{{ program.university.name }} {{ program.name }} егэ 2018 зарплата{% endblock %}
+{% block title %}{{ program.full_name }} проходной балл и зарплата{% endblock %}
 {% block content %}
 <br>
 
