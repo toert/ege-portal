@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include('calculator.urls', namespace='calculator')),
+    url(r'^rating/', include('rating.urls', namespace='rating')),
 ]
 
 

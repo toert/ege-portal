@@ -1,0 +1,80 @@
+{% extends 'calculator/base.html' %}
+{% block title %}Рейтинг университетов по заработной плате{% endblock %}
+{% block content %}
+{% regroup universities by region_name as cities %}
+
+<div class="container">
+
+    <h3>Рейтинг университетов</h3>
+    <p>
+        Данный рейтинг предоставляет 30 лучших университетов по средней заработной плате выпускников за первый год после
+        выпуска из учебного заведения.
+    </p>
+
+    <ul class="nav nav-tabs tab">
+        {% for city in cities|slice:'::-1' %}
+        <li class="tablinks nav-item{% if forloop.first %} active{% endif %}" onclick="openCity(event, '{{ city.grouper }}')">
+            <a class="tablinks nav-link" href="#">{{ city.grouper }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% for city in cities %}
+    <div id="{{ city.grouper }}" class="tabcontent">
+        <table class="table table-responsive table-bordered">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Название</th>
+                <th>Средняя доля трудоустройства</th>
+                <th>Средняя заработная плата</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for university in city.list|slice:':30' %}
+            <tr>
+                <th style="width: 10%">{{forloop.counter}}</th>
+                <td style="width: 50%">
+                    <a href="{% url 'calculator:university_details' university.id %}">
+                    {{ university.name }}
+                    </a>
+                </td>
+                <td style="width: 20%">{{ university.employment_percentage|floatformat:"0" }}%</td>
+                <td style="width: 20%">{{ university.average_salary|floatformat:"0" }}₽</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+
+</div>
+
+<script type="text/javascript">
+
+    function openCity(evt, cityName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+$(document).ready(function () {
+    tablinks = document.getElementsByClassName("tablinks");
+    tablinks[0].click()
+});
+</script>
+{% endblock %}

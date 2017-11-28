@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'universities',
-    'calculator'
+    'calculator',
+    'rating'
 ]
 
 MIDDLEWARE = [
