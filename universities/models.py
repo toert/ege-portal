@@ -81,8 +81,8 @@ class Program(models.Model):
         if not self.second_passing_score:
             return 0
         if not self.custom_exam:
-            required_exams_for_program = self.exams.all()
-            return self.second_passing_score / len(required_exams_for_program)
+            required_exams_for_program = self.exams
+            return self.second_passing_score / required_exams_for_program.count()
         else:
             return self.second_passing_score
 
