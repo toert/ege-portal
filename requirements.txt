@@ -3,7 +3,7 @@ bs4==0.0.1
 certifi==2017.7.27.1
 chardet==3.0.4
 Django==1.11.5
-django-debug-toolbar==1.8
+django-debug-toolbar==1.11.1
 gunicorn==19.7.1
 idna==2.6
 psycopg2==2.7.3.1
